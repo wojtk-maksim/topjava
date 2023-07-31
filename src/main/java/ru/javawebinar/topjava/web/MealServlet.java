@@ -19,7 +19,12 @@ import static ru.javawebinar.topjava.util.MealsUtil.filteredByStreams;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private static final MealDao dao = new MealDaoInMemory();
+    private MealDao dao;
+
+    @Override
+    public void init() {
+        dao = new MealDaoInMemory();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -29,7 +34,7 @@ public class MealServlet extends HttpServlet {
             if (id == null) {
                 log.debug("redirect to new meal form");
             } else {
-                log.debug("redirect to update meal form [id={}]", id);
+                log.debug("redirect to update meal form [id: {}]", id);
 
                 Meal meal = dao.get(Integer.parseInt(id));
                 request.setAttribute("meal", meal);

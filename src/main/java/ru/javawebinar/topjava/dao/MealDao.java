@@ -9,7 +9,7 @@ public interface MealDao {
 
     Meal get(int id);
 
-    void save(Meal meal);
+    Meal save(Meal meal);
 
     void delete(int id);
 }

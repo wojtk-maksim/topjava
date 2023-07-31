@@ -25,10 +25,7 @@ public class MealDaoInMemory implements MealDao {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
-        ).forEach(m -> {
-            int id = idCounter.incrementAndGet();
-            meals.put(id, new Meal(id, m));
-        });
+        ).forEach(meal -> meals.compute(idCounter.incrementAndGet(), (k, v) -> new Meal(k, meal)));
     }
 
     @Override
@@ -42,14 +39,12 @@ public class MealDaoInMemory implements MealDao {
     }
 
     @Override
-    public void save(Meal meal) {
+    public Meal save(Meal meal) {
         Integer id = meal.getId();
         if (id == null) {
-            id = idCounter.incrementAndGet();
-            Meal newMeal = new Meal(id, meal);
-            meals.compute(id, (k, v) -> newMeal);
+            return meals.compute(idCounter.incrementAndGet(), (k, v) -> new Meal(k, meal));
         } else {
-            meals.computeIfPresent(id, (k, v) -> meal);
+            return meals.computeIfPresent(id, (k, v) -> meal);
         }
     }
 

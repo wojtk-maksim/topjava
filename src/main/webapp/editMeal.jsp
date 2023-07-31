@@ -13,34 +13,16 @@
     <table>
         <tbody>
         <tr>
-            <td>
-                DateTime:
-            </td>
-            <td>
-                <label>
-                    <input type="datetime-local" name="dateTime" value="${meal.dateTime}">
-                </label>
-            </td>
+            <td><label for="dateTime">DateTime:</label></td>
+            <td><input type="datetime-local" id="dateTime" name="dateTime" value="${meal.dateTime}"></td>
         </tr>
         <tr>
-            <td>
-                Description:
-            </td>
-            <td>
-                <label>
-                    <input type="text" name="description" value="${meal.description}">
-                </label>
-            </td>
+            <td><label for="description">Description:</label></td>
+            <td><input type="text" id="description" name="description" value="${meal.description}"></td>
         </tr>
         <tr>
-            <td>
-                Calories:
-            </td>
-            <td>
-                <label>
-                    <input type="number" name="calories" value="${meal.calories}">
-                </label>
-            </td>
+            <td><label for="calories">Calories:</label></td>
+            <td><input type="number" id="calories" name="calories" value="${meal.calories}"></td>
         </tr>
         <tr>
             <td>

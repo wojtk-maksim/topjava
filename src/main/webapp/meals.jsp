@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="static ru.javawebinar.topjava.util.TimeUtil.DATE_TIME_FORMATTER" %>
+<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
 <html>
 <head>
     <title>meals</title>
@@ -19,8 +19,8 @@
         <th></th>
         <th></th>
     </tr>
-    <c:set var="dateTimeFormatter" value="${DATE_TIME_FORMATTER}"/>
-    <c:forEach items="${requestScope.get('meals')}" var="meal">
+    <c:set var="dateTimeFormatter" value="${TimeUtil.DATE_TIME_FORMATTER}"/>
+    <c:forEach items="${requestScope.meals}" var="meal">
         <tr style="color: ${meal.excess ? 'red' : 'green'}">
             <td>${meal.dateTime.format(dateTimeFormatter)}</td>
             <td>${meal.description}</td>

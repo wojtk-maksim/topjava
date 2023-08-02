@@ -14,6 +14,10 @@
         .excess {
             color: red;
         }
+
+        .p8 {
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
@@ -21,6 +25,33 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <form action="meals">
+        <input type="hidden" name="action" value="filter">
+        <table class="p8">
+            <tbody>
+            <tr>
+                <td><label for="startDate">From date (inclusive)</label></td>
+                <td><label for="endDate">To date (inclusive)</label></td>
+                <td><label for="startTime">From time (inclusive)</label></td>
+                <td><label for="endTime">To time (exclusive)</label></td>
+            </tr>
+            <tr>
+                <td><input type="date" id="startDate" name="startDate" value="${param.startDate}"></td>
+                <td><input type="date" id="endDate" name="endDate" value="${param.endDate}"></td>
+                <td><input type="time" id="startTime" name="startTime" value="${param.startTime}"></td>
+                <td><input type="time" id="endTime" name="endTime" value="${param.endTime}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><input type="submit" value="Filter"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
@@ -34,7 +65,7 @@
         </tr>
         </thead>
         <c:forEach items="${requestScope.meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>

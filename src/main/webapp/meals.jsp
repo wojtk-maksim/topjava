@@ -15,8 +15,8 @@
             color: red;
         }
 
-        .p8 {
-            padding: 8px;
+        .width80 {
+            width: 80%;
         }
     </style>
 </head>
@@ -27,7 +27,7 @@
     <h2>Meals</h2>
     <form action="meals">
         <input type="hidden" name="action" value="filter">
-        <table class="p8">
+        <table class="width80">
             <tbody>
             <tr>
                 <td><label for="startDate">From date (inclusive)</label></td>
@@ -54,7 +54,7 @@
     </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table border="1" cellpadding="8" cellspacing="0" class="width80">
         <thead>
         <tr>
             <th>Date</th>

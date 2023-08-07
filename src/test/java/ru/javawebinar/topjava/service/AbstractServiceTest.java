@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
 import org.junit.Rule;
+import org.junit.rules.Stopwatch;
 import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -12,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Collections;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -25,24 +27,19 @@ public class AbstractServiceTest {
     static final StringBuilder stringBuilder = new StringBuilder();
 
     @Rule
-    public TestRule watcher = new TestWatcher() {
-        long start;
+    public TestRule watcher = new Stopwatch() {
 
         @Override
-        public void starting(Description description) {
-            start = System.nanoTime();
-        }
-
-        @Override
-        public void finished(Description description) {
-            String result = String.format("%-19d ns", System.nanoTime() - start);
-            String methodName = String.format("%-28s", description.getMethodName());
-            log.info("\n{}\tfinished in {}", methodName, result);
+        public void finished(long nanos, Description description) {
+            String methodName = description.getMethodName();
+            log.info("\n{} finished in {}", methodName, nanos);
             stringBuilder
                     .append("\n")
-                    .append(methodName)
+                    .append(String.join("", Collections.nCopies(62, "-")))
+                    .append(String.format("\n%-28s", methodName))
                     .append("finished in ")
-                    .append(result);
+                    .append(String.format("%-19d ns\n", nanos))
+                    .append(String.join("", Collections.nCopies(62, "-")));
         }
     };
 

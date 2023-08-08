@@ -8,16 +8,18 @@ import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
 import java.util.Collections;
 
-import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
+import static ru.javawebinar.topjava.MealTestData.meals;
+import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles(profiles = "datajpa")
+@ActiveProfiles(DATAJPA)
 public class DatajpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getWithMeals() {
         User user = service.getWithMeals(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
-        MEAL_MATCHER.assertMatch(user.getMeals(), meal1, meal2, meal3, meal4, meal5, meal6, meal7);
+        MEAL_MATCHER.assertMatch(user.getMeals(), meals);
     }
 
     @Test

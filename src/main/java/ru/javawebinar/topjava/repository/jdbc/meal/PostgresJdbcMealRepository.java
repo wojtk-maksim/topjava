@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
-@Profile(value = "postgres")
+import static ru.javawebinar.topjava.Profiles.POSTGRES_DB;
+
+@Profile(POSTGRES_DB)
 @Repository
 public class PostgresJdbcMealRepository extends AbstractJdbcMealRepository<LocalDateTime> {
     public PostgresJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {

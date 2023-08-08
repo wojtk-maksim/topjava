@@ -2,19 +2,15 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public class DataJpaMealRepository implements MealRepository {
-    @PersistenceContext
-    EntityManager em;
-
     private final CrudMealRepository crudRepository;
     private final CrudUserRepository crudUserRepository;
     private static final Sort SORT_DATE_TIME_DESC = Sort.by(Sort.Direction.DESC, "dateTime");
@@ -25,6 +21,7 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public Meal save(Meal meal, int userId) {
         meal.setUser(crudUserRepository.getReferenceById(userId));
         if (meal.isNew()) {
@@ -59,5 +56,10 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return crudRepository.getBetweenHalfOpen(userId, startDateTime, endDateTime, SORT_DATE_TIME_DESC);
+    }
+
+    @Override
+    public Meal getWithUser(int id, int userId) {
+        return crudRepository.getWithUser(id, userId);
     }
 }

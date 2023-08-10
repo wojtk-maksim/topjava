@@ -20,8 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -36,13 +36,13 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = new ArrayList<>();
         User currentUser = ROW_MAPPER.mapRow(rs, rs.getRow());
         String role = rs.getString("role");
-        currentUser.setRoles(role != null ? Set.of(Role.valueOf(role)) : Set.of());
+        currentUser.setRoles(role != null ? EnumSet.of(Role.valueOf(role)) : EnumSet.noneOf(Role.class));
         while (rs.next()) {
             role = rs.getString("role");
             if (currentUser.getId() != (rs.getInt("id"))) {
                 users.add(currentUser);
                 currentUser = ROW_MAPPER.mapRow(rs, rs.getRow());
-                currentUser.setRoles(role != null ? Set.of(Role.valueOf(role)) : Set.of());
+                currentUser.setRoles(role != null ? EnumSet.of(Role.valueOf(role)) : EnumSet.noneOf(Role.class));
             } else {
                 currentUser.addRoles(Role.valueOf(role));
             }

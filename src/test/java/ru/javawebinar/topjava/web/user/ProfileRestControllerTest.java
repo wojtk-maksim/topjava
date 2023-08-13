@@ -10,14 +10,10 @@ import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.meals;
-import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
@@ -36,14 +32,14 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getWithMeals() throws Exception {
-        assumeTrue(Arrays.asList(webApplicationContext.getEnvironment().getActiveProfiles()).contains(DATAJPA));
+        assumeDatajpaIsActiveProfile();
         User user = UserTestData.user;
         user.setMeals(meals);
         perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(user));
+                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(user));
     }
 
     @Test

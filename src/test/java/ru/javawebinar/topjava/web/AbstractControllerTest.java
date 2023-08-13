@@ -14,6 +14,10 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static ru.javawebinar.topjava.Profiles.DATAJPA;
 
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -48,5 +52,9 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    protected void assumeDatajpaIsActiveProfile() {
+        assumeTrue(Arrays.asList(webApplicationContext.getEnvironment().getActiveProfiles()).contains(DATAJPA));
     }
 }

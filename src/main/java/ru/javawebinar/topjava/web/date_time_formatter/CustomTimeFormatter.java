@@ -9,12 +9,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class CustomTimeFormatter implements Formatter<LocalTime> {
-    private static final String FORMAT = "HH:mm";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Override
     public LocalTime parse(String text, Locale locale) throws ParseException {
         if (StringUtils.hasLength(text)) {
-            return LocalTime.parse(text, DateTimeFormatter.ofPattern(FORMAT));
+            return LocalTime.parse(text, FORMATTER);
         } else {
             return null;
         }

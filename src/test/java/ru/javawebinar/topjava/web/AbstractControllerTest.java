@@ -36,7 +36,7 @@ public abstract class AbstractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    protected WebApplicationContext webApplicationContext;
 
     @PostConstruct
     private void postConstruct() {

@@ -32,8 +32,10 @@ public class MealTestData {
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
-    public static final String START_DATE_TIME = "2020-01-30T13:00";
-    public static final String END_DATE_TIME = "2020-01-31T20:00";
+    public static final String START_DATE = "2020-01-30";
+    public static final String START_TIME = "13:00";
+    public static final String END_DATE = "2020-01-31";
+    public static final String END_TIME = "20:00";
     public static final List<MealTo> betweenMeals = MealsUtil.getFilteredTos(meals, DEFAULT_CALORIES_PER_DAY, LocalTime.of(13, 0), LocalTime.of(20, 0));
 
     public static Meal getNew() {

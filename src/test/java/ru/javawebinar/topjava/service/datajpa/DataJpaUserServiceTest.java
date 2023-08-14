@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -25,12 +26,8 @@ class DataJpaUserServiceTest extends AbstractUserServiceTest {
     }
 
     @Test
-    void setStatus() {
-        User actual = service.create(getNew());
-        service.setStatus(actual.id(), false);
-        User expected = getNew();
-        expected.setId(actual.id());
-        expected.setEnabled(false);
-        USER_MATCHER.assertMatch(actual, expected);
+    void enable() {
+        service.enable(USER_ID, false);
+        assertFalse(service.get(USER_ID).isEnabled());
     }
 }

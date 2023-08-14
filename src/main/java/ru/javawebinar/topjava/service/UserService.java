@@ -57,7 +57,7 @@ public class UserService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
-    public void setStatus(int id, boolean enabled) {
-        checkNotFoundWithId(repository.setStatus(id, enabled), id);
+    public void enable(int id, boolean enabled) {
+        checkNotFoundWithId(repository.enable(id, enabled), id);
     }
 }

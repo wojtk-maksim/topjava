@@ -2,6 +2,14 @@ const mealAjaxUrl = "profile/meals/";
 const filterAjaxUrl = mealAjaxUrl + "filter"
 const filterForm = $('#filter');
 const filterInputs = document.querySelectorAll('#filter input');
+const hasFilters = () => {
+    filterInputs.forEach((input) => {
+        if (input.value !== null) {
+            return true;
+        }
+    });
+    return false;
+}
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -43,6 +51,15 @@ $(function () {
     );
 });
 
+// Override function from topjava.commons.js
+function updateTable() {
+    if (hasFilters) {
+        filter();
+    } else {
+        update();
+    }
+}
+
 function filter() {
     $.ajax({
         type: "GET",
@@ -55,5 +72,5 @@ function filter() {
 
 function clearFilter() {
     filterInputs.forEach((input) => input.value = null);
-    updateTable();
+    update();
 }

@@ -37,6 +37,10 @@ function deleteRow(id) {
 }
 
 function updateTable() {
+    update();
+}
+
+function update() {
     $.get(ctx.ajaxUrl, function (data) {
         drawTable(data)
     });

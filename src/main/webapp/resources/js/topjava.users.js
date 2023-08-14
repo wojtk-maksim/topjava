@@ -46,12 +46,14 @@ $(function () {
     );
 });
 
-function changeStatus(id, enabled) {
+function enable(id, enabled) {
     $.ajax({
         type: "PATCH",
         url: userAjaxUrl + id,
         data: JSON.stringify(enabled),
         contentType: 'application/json; charset=utf-8'
+    }).done(function () {
+        successNoty("User " + id + (enabled ? " enabled" : " disabled"))
     })
     updateTable();
 }

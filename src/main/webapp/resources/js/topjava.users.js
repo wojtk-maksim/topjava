@@ -45,3 +45,13 @@ $(function () {
         })
     );
 });
+
+function changeStatus(id, enabled) {
+    $.ajax({
+        type: "PATCH",
+        url: userAjaxUrl + id,
+        data: JSON.stringify(enabled),
+        contentType: 'application/json; charset=utf-8'
+    })
+    updateTable();
+}

@@ -1,6 +1,7 @@
 const mealAjaxUrl = "profile/meals/";
 const filterAjaxUrl = mealAjaxUrl + "filter"
 const filterForm = $('#filter');
+const filterInputs = document.querySelectorAll('#filter input');
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -48,6 +49,11 @@ function filter() {
         url: filterAjaxUrl,
         data: filterForm.serialize()
     }).done(function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        drawTable(data);
     });
+}
+
+function clearFilter() {
+    filterInputs.forEach((input) => input.value = null);
+    updateTable();
 }

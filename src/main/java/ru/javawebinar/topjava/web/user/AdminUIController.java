@@ -9,8 +9,9 @@ import ru.javawebinar.topjava.model.User;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = AdminUIController.ADMIN_UI_REST, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
+    public static final String ADMIN_UI_REST = "/admin/users";
 
     @Override
     @GetMapping
@@ -31,5 +32,11 @@ public class AdminUIController extends AbstractUserController {
                        @RequestParam String email,
                        @RequestParam String password) {
         super.create(new User(null, name, email, password, Role.USER));
+    }
+
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setStatus(@PathVariable int id, @RequestBody boolean enabled) {
+        super.setStatus(id, enabled);
     }
 }

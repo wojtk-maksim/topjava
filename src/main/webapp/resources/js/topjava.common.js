@@ -1,5 +1,9 @@
 let form;
 
+function drawTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
+}
+
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
@@ -34,7 +38,7 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        drawTable(data)
     });
 }
 

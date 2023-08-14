@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.web.user.AdminUIController.ADMIN_UI_REST;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -92,5 +93,20 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(admin));
+    }
+
+    @Test
+    void setStatus() throws Exception {
+        assumeDataJpa();
+        User actual = userService.create(getNew());
+        perform(MockMvcRequestBuilders.patch(ADMIN_UI_REST + "/" + actual.id())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(false)))
+                .andExpect(status().isNoContent());
+
+        User expected = getNew();
+        expected.setId(actual.id());
+        expected.setEnabled(false);
+        USER_MATCHER.assertMatch(actual, expected);
     }
 }

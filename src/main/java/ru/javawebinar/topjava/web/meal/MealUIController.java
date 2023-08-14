@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
@@ -27,18 +28,21 @@ public class MealUIController extends AbstractMealController {
 
     @Override
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
     }
 
     @Override
     @PostMapping()
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Meal create(Meal meal) {
         return super.create(meal);
     }
 
     @Override
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(Meal meal, @PathVariable int id) {
         super.update(meal, id);
     }

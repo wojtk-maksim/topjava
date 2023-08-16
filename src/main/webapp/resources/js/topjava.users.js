@@ -5,6 +5,11 @@ const ctx = {
     ajaxUrl: userAjaxUrl,
     updateTable: function () {
         $.get(userAjaxUrl, updateTableByData);
+    },
+    formatDataForUI(data) {
+    },
+    serialize() {
+        return form.serialize();
     }
 }
 

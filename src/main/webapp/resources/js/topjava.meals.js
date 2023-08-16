@@ -9,7 +9,20 @@ const ctx = {
             url: mealAjaxUrl + "filter",
             data: $("#filter").serialize()
         }).done(updateTableByData);
+    },
+    formatDataForUI(data) {
+        data.dateTime = formatDateTime(data.dateTime);
+    },
+    serialize() {
+        return "id=" + $('#id').val() + "&" +
+            "dateTime=" + $('#dateTime').val().replace(" ", "T") + "&" +
+            "description=" + $('#description').val() + "&" +
+            "calories=" + $('#calories').val();
     }
+}
+
+function formatDateTime(dateTime) {
+    return dateTime.substring(0, 16).replace("T", " ");
 }
 
 function clearFilter() {
@@ -31,9 +44,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (dateTime, type, row) {
                         if (type === "display") {
-                            dateTime = dateTime.substring(0, 16);
-                            dateTime = dateTime.replace("T", " ");
-                            return dateTime;
+                            return formatDateTime(dateTime);
                         }
                         return dateTime;
                     }
@@ -66,4 +77,29 @@ $(function () {
             }
         })
     );
+});
+
+// DateTimePicker
+$('#dateTime').datetimepicker({
+    format: 'Y-m-d H:i',
+});
+
+$('#startDate').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d',
+});
+
+$('#endDate').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d',
+});
+
+$('#startTime').datetimepicker({
+    datepicker: false,
+    format: 'H:i',
+});
+
+$('#endTime').datetimepicker({
+    datepicker: false,
+    format: 'H:i',
 });

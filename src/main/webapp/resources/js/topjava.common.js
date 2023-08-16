@@ -22,6 +22,7 @@ function updateRow(id) {
     form.find(":input").val("");
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
+        ctx.formatDataForUI(data);
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -49,7 +50,7 @@ function save() {
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
-        data: form.serialize()
+        data: ctx.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();

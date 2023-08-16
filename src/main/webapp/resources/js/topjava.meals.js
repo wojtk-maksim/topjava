@@ -10,19 +10,12 @@ const ctx = {
             data: $("#filter").serialize()
         }).done(updateTableByData);
     },
-    formatDataForUI(data) {
-        data.dateTime = formatDateTime(data.dateTime);
-    },
     serialize() {
         return "id=" + $('#id').val() + "&" +
             "dateTime=" + $('#dateTime').val().replace(" ", "T") + "&" +
             "description=" + $('#description').val() + "&" +
             "calories=" + $('#calories').val();
     }
-}
-
-function formatDateTime(dateTime) {
-    return dateTime.substring(0, 16).replace("T", " ");
 }
 
 function clearFilter() {
@@ -42,12 +35,6 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (dateTime, type, row) {
-                        if (type === "display") {
-                            return formatDateTime(dateTime);
-                        }
-                        return dateTime;
-                    }
                 },
                 {
                     "data": "description"
@@ -84,22 +71,47 @@ $('#dateTime').datetimepicker({
     format: 'Y-m-d H:i',
 });
 
-$('#startDate').datetimepicker({
+let startDate = $('#startDate');
+let endDate = $('#endDate');
+let startTime = $('#startTime');
+let endTime = $('#endTime');
+
+startDate.datetimepicker({
     timepicker: false,
     format: 'Y-m-d',
+    onShow: function (ct) {
+        this.setOptions({
+            maxDate: endDate.val() ? endDate.val() : false
+        })
+    }
 });
 
-$('#endDate').datetimepicker({
+endDate.datetimepicker({
     timepicker: false,
     format: 'Y-m-d',
+    onShow: function (ct) {
+        this.setOptions({
+            minDate: startDate.val() ? startDate.val() : false
+        })
+    }
 });
 
-$('#startTime').datetimepicker({
+startTime.datetimepicker({
     datepicker: false,
     format: 'H:i',
+    onShow: function (ct) {
+        this.setOptions({
+            maxTime: endTime.val() ? endTime.val() : false
+        })
+    }
 });
 
-$('#endTime').datetimepicker({
+endTime.datetimepicker({
     datepicker: false,
     format: 'H:i',
+    onShow: function (ct) {
+        this.setOptions({
+            minTime: startTime.val() ? startTime.val() : false
+        })
+    }
 });

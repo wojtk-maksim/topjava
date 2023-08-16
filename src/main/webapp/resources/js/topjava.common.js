@@ -12,6 +12,24 @@ function makeEditable(datatableApi) {
     $.ajaxSetup({cache: false});
 }
 
+$.ajaxSetup({
+    converters: {
+        "text json": function (data) {
+            let json = JSON.parse(data);
+            if (typeof json === 'object') {
+                $(json).each(function () {
+                    if (this.hasOwnProperty('dateTime')) {
+                        this.dateTime = this.dateTime.substring(0, 16).replace('T', ' ');
+                    } else {
+                        this.registered = this.registered.substring(0, 10);
+                    }
+                });
+            }
+            return json;
+        }
+    }
+});
+
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");
@@ -22,7 +40,6 @@ function updateRow(id) {
     form.find(":input").val("");
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
-        ctx.formatDataForUI(data);
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });

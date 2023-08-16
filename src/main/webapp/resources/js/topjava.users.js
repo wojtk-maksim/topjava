@@ -6,8 +6,6 @@ const ctx = {
     updateTable: function () {
         $.get(userAjaxUrl, updateTableByData);
     },
-    formatDataForUI(data) {
-    },
     serialize() {
         return form.serialize();
     }
@@ -64,13 +62,7 @@ $(function () {
                     }
                 },
                 {
-                    "data": "registered",
-                    "render": function (date, type, row) {
-                        if (type === "display") {
-                            return date.substring(0, 10);
-                        }
-                        return date;
-                    }
+                    "data": "registered"
                 },
                 {
                     "orderable": false,

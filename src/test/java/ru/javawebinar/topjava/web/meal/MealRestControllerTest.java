@@ -136,6 +136,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(newMeal)))
                 .andExpect(status().isUnprocessableEntity());
 
+        // Already occupied datetime
+        newMeal = getNew();
+        newMeal.setDateTime(meal7.getDateTime());
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isUnprocessableEntity());
+
         // Invalid description
         newMeal = getNew();
         newMeal.setDescription("");
@@ -158,6 +166,14 @@ class MealRestControllerTest extends AbstractControllerTest {
         // Invalid datetime
         Meal updated = getUpdated();
         updated.setDateTime(null);
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Already occupied datetime
+        updated = getUpdated();
+        updated.setDateTime(meal7.getDateTime());
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))

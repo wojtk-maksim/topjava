@@ -161,6 +161,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andExpect(status().isUnprocessableEntity());
 
+        // Already registered email
+        newUser = getNew();
+        newUser.setEmail("admin@gmail.com");
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+
         //Invalid password
         newUser = getNew();
         newUser.setPassword("p");
@@ -191,6 +199,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
         // Invalid email
         updated = getUpdated();
         updated.setEmail("");
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Already registered email
+        updated = getUpdated();
+        updated.setEmail("admin@gmail.com");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))

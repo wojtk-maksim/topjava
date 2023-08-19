@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.HasUserAttributes;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.regex.Pattern;
@@ -37,8 +38,11 @@ public class UserValidator implements Validator {
             errors.rejectValue("email", "user.email.invalid.length");
         } else if (!emailMatcher.matcher(user.getEmail()).matches()) {
             errors.rejectValue("email", "user.email.invalid.format");
-        } else if (userRepository.getByEmail(user.getEmail()) != null) {
-            errors.rejectValue("email", "user.email.already.exists");
+        } else {
+            User sameEmailUser = userRepository.getByEmail(user.getEmail());
+            if (sameEmailUser != null && !sameEmailUser.getId().equals(user.getId())) {
+                errors.rejectValue("email", "user.email.already.exists");
+            }
         }
 
         if (user.getPassword() == null || user.getPassword().isBlank()) {

@@ -4,6 +4,7 @@ package ru.javawebinar.topjava.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -92,7 +93,7 @@ public class ValidationUtil implements MessageSourceAware {
 
     public static String getValidationErrorsAsJson(BindingResult result, Locale locale) {
         return result.getFieldErrors().stream()
-                .map(fe -> "\"" + fe.getField() + "\"" + ":" + "\"" + messageSource.getMessage(fe.getCode(), null, locale) + "\"")
+                .map(fe -> "\"" + fe.getField() + "\"" + ":" + "\"" + messageSource.getMessage(fe.getCode(), null, LocaleContextHolder.getLocale()) + "\"")
                 .collect(joining(",", "{", "}"));
     }
 

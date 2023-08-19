@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava;
 
-public interface HasUserAttributes {
+public interface HasUserAttributes extends HasId {
     String getName();
 
     String getEmail();

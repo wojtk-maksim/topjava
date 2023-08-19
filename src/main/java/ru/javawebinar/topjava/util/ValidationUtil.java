@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
-import java.util.Locale;
 import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
@@ -91,15 +90,15 @@ public class ValidationUtil implements MessageSourceAware {
         return rootCause != null ? rootCause : t;
     }
 
-    public static String getValidationErrorsAsJson(BindingResult result, Locale locale) {
+    public static String getValidationErrorsAsJson(BindingResult result) {
         return result.getFieldErrors().stream()
                 .map(fe -> "\"" + fe.getField() + "\"" + ":" + "\"" + messageSource.getMessage(fe.getCode(), null, LocaleContextHolder.getLocale()) + "\"")
                 .collect(joining(",", "{", "}"));
     }
 
-    public static void checkValidationErrors(BindingResult result, Locale locale) {
+    public static void checkValidationErrors(BindingResult result) {
         if (result.hasErrors()) {
-            throw new IllegalRequestDataException(getValidationErrorsAsJson(result, locale));
+            throw new IllegalRequestDataException(getValidationErrorsAsJson(result));
         }
     }
 }

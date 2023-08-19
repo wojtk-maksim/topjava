@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -41,8 +40,8 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@Valid Meal meal, BindingResult result, HttpServletRequest request) {
-        checkValidationErrors(result, request.getLocale());
+    public void createOrUpdate(@Valid Meal meal, BindingResult result) {
+        checkValidationErrors(result);
 
         if (meal.isNew()) {
             super.create(meal);

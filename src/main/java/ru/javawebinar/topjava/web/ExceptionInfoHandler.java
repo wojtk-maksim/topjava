@@ -47,7 +47,7 @@ public class ExceptionInfoHandler {
     public ErrorInfo validationError(HttpServletRequest req, Exception e) {
         if (MethodArgumentNotValidException.class == e.getClass()) {
             IllegalRequestDataException exception = new IllegalRequestDataException(
-                    getValidationErrorsAsJson(((BindException) e).getBindingResult(), req.getLocale())
+                    getValidationErrorsAsJson(((BindException) e).getBindingResult())
             );
             return logAndGetErrorInfo(req, exception, false, VALIDATION_ERROR);
         }

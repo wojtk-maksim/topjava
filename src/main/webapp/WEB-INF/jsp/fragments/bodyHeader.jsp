@@ -34,9 +34,9 @@
                 <spring:message code="common.choose.language"/>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <c:set var="servletPath" value="${requestScope['javax.servlet.forward.servlet_path']}"/>
-                <a class="dropdown-item" href="${pageContext.request.contextPath}${servletPath}?language=en">English</a>
-                <a class="dropdown-item" href="${pageContext.request.contextPath}${servletPath}?language=ru">Russian</a>
+                <c:set var="currentUrl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
+                <a class="dropdown-item" href="${currentUrl}?language=en">English</a>
+                <a class="dropdown-item" href="${currentUrl}?language=ru">Russian</a>
             </div>
         </div>
     </div>

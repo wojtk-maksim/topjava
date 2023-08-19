@@ -7,11 +7,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -144,88 +144,97 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createWithInvalidData() throws Exception {
-        // Invalid name
+    void createUpdateInvalidName() throws Exception {
         User newUser = getNew();
         newUser.setName("");
         perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
 
-        // Invalid email
-        newUser = getNew();
-        newUser.setEmail("!!!!!");
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
-
-        // Already registered email
-        newUser = getNew();
-        newUser.setEmail("admin@gmail.com");
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
-
-        //Invalid password
-        newUser = getNew();
-        newUser.setPassword("p");
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
-
-        // Invalid calories per day
-        newUser = getNew();
-        newUser.setCaloriesPerDay(-100);
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    void updateWithInvalidData() throws Exception {
-        // Invalid name
         User updated = getUpdated();
         updated.setName("");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Invalid email
-        updated = getUpdated();
+    @Test
+    void createUpdateInvalidEmail() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail("!!!!!");
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        User updated = getUpdated();
         updated.setEmail("");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Already registered email
-        updated = getUpdated();
+    @Test
+    void createUpdateAlreadyRegisteredEmail() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail("admin@gmail.com");
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        User updated = getUpdated();
         updated.setEmail("admin@gmail.com");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Invalid password
-        updated = getUpdated();
+    @Test
+    void createUpdateInvalidPassword() throws Exception {
+        User newUser = getNew();
+        newUser.setPassword("p");
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        User updated = getUpdated();
         updated.setPassword("p");
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Invalid calories per day
-        updated = getUpdated();
+    @Test
+    void createUpdateWithInvalidCalories() throws Exception {
+        User newUser = getNew();
+        newUser.setCaloriesPerDay(-100);
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        User updated = getUpdated();
         updated.setCaloriesPerDay(1_000_000);
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
     }
 }

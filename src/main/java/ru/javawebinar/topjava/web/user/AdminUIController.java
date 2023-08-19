@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -38,8 +37,8 @@ public class AdminUIController extends AbstractUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@Valid UserTo userTo, BindingResult result, HttpServletRequest request) {
-        checkValidationErrors(result, request.getLocale());
+    public void createOrUpdate(@Valid UserTo userTo, BindingResult result) {
+        checkValidationErrors(result);
 
         if (userTo.isNew()) {
             super.create(userTo);

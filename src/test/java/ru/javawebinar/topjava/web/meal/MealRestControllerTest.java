@@ -8,11 +8,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -125,74 +127,79 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
 
-
     @Test
-    void createWithInvalidData() throws Exception {
-        // Invalid datetime
+    void createUpdateWithInvalidDateTime() throws Exception {
         Meal newMeal = getNew();
         newMeal.setDateTime(null);
         perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
 
-        // Already occupied datetime
-        newMeal = getNew();
-        newMeal.setDateTime(meal7.getDateTime());
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))
-                .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isUnprocessableEntity());
-
-        // Invalid description
-        newMeal = getNew();
-        newMeal.setDescription("");
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))
-                .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isUnprocessableEntity());
-
-        // Invalid calories
-        newMeal = getNew();
-        newMeal.setCalories(0);
-        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))
-                .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    void updateWithInvalidData() throws Exception {
-        // Invalid datetime
         Meal updated = getUpdated();
         updated.setDateTime(null);
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Already occupied datetime
-        updated = getUpdated();
+    @Test
+    void createUpdateDuplicateDateTime() throws Exception {
+        Meal newMeal = getNew();
+        newMeal.setDateTime(meal7.getDateTime());
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        Meal updated = getUpdated();
         updated.setDateTime(meal7.getDateTime());
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Invalid description
-        updated = getUpdated();
+    @Test
+    void createUpdateWithInvalidDescription() throws Exception {
+        Meal newMeal = getNew();
+        newMeal.setDescription("");
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        Meal updated = getUpdated();
         updated.setDescription("");
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+    }
 
-        // Invalid calories
-        updated = getUpdated();
+    @Test
+    void createUpdateWithInvalidCalories() throws Exception {
+        Meal newMeal = getNew();
+        newMeal.setCalories(0);
+        perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
+
+        Meal updated = getUpdated();
         updated.setCalories(0);
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ErrorType.VALIDATION_ERROR.name())));
     }
 }

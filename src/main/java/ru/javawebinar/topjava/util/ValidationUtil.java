@@ -1,19 +1,32 @@
 package ru.javawebinar.topjava.util;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.core.NestedExceptionUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
+import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class ValidationUtil {
+import static java.util.stream.Collectors.joining;
+
+@Component
+public class ValidationUtil implements MessageSourceAware {
+    private static MessageSource messageSource;
+
+    @Override
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        ValidationUtil.messageSource = messageSource;
+    }
 
     private static final Validator validator;
 
@@ -77,11 +90,15 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        return ResponseEntity.unprocessableEntity().body(
-                result.getFieldErrors().stream()
-                        .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                        .collect(Collectors.joining("<br>"))
-        );
+    public static String getValidationErrorsAsJson(BindingResult result, Locale locale) {
+        return result.getFieldErrors().stream()
+                .map(fe -> "\"" + fe.getField() + "\"" + ":" + "\"" + messageSource.getMessage(fe.getCode(), null, locale) + "\"")
+                .collect(joining(",", "{", "}"));
+    }
+
+    public static void checkValidationErrors(BindingResult result, Locale locale) {
+        if (result.hasErrors()) {
+            throw new IllegalRequestDataException(getValidationErrorsAsJson(result, locale));
+        }
     }
 }

@@ -7,9 +7,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
@@ -20,9 +21,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.getValidationErrorsAsJson;
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
-@RestControllerAdvice(annotations = RestController.class)
+@RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
@@ -41,8 +43,14 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
-    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
     public ErrorInfo validationError(HttpServletRequest req, Exception e) {
+        if (MethodArgumentNotValidException.class == e.getClass()) {
+            IllegalRequestDataException exception = new IllegalRequestDataException(
+                    getValidationErrorsAsJson(((BindException) e).getBindingResult(), req.getLocale())
+            );
+            return logAndGetErrorInfo(req, exception, false, VALIDATION_ERROR);
+        }
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }
 
@@ -60,6 +68,6 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.getMessage());
     }
 }

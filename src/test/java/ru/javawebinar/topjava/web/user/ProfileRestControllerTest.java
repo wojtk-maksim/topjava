@@ -86,4 +86,67 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(user));
     }
+
+    @Test
+    void registerWithInvalidData() throws Exception {
+        // Invalid name
+        UserTo newTo = new UserTo(null, "", "newemail@ya.ru", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Invalid email
+        newTo = new UserTo(null, "newName", "newemail!!!!!ya.ru", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+
+        // Invalid password
+        newTo = new UserTo(null, "newName", "newemail@ya.ru", "p", 1500);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Invalid calories per day
+        newTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword", -100);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void updateWithInvalidData() throws Exception {
+        // Invalid name
+        UserTo updatedTo = new UserTo(null, "", "user@yandex.ru", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Invalid email
+        updatedTo = new UserTo(null, "newName", "user!!!!yandex.ru", "newPassword", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Invalid password
+        updatedTo = new UserTo(null, "newName", "user@yandex.ru", "p", 1500);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andExpect(status().isUnprocessableEntity());
+
+        // Invalid calories per day
+        updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 0);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }

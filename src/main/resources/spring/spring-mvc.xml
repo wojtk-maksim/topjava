@@ -70,6 +70,8 @@
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 
+    <context:component-scan base-package="ru.javawebinar.**.util"/>
+
     <mvc:interceptors>
         <bean class="ru.javawebinar.topjava.web.interceptor.ModelInterceptor"/>
     </mvc:interceptors>
